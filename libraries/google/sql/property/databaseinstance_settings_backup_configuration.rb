@@ -16,6 +16,23 @@
 module GoogleInSpec
   module SQL
     module Property
+      class DatabaseInstanceSettingsBackupConfigurationBackupRetentionSettings
+        attr_reader :retained_backups
+
+        attr_reader :retention_unit
+
+        def initialize(args = nil, parent_identifier = nil)
+          return if args.nil?
+          @parent_identifier = parent_identifier
+          @retained_backups = args['retainedBackups']
+          @retention_unit = args['retentionUnit']
+        end
+
+        def to_s
+          "#{@parent_identifier} BackupRetentionSettings"
+        end
+      end
+
       class DatabaseInstanceSettingsBackupConfiguration
         attr_reader :enabled
 
@@ -23,12 +40,24 @@ module GoogleInSpec
 
         attr_reader :start_time
 
+        attr_reader :point_in_time_recovery_enabled
+
+        attr_reader :transaction_log_retention_days
+
+        attr_reader :backup_retention_settings
+
+        attr_reader :location
+
         def initialize(args = nil, parent_identifier = nil)
           return if args.nil?
           @parent_identifier = parent_identifier
           @enabled = args['enabled']
           @binary_log_enabled = args['binaryLogEnabled']
           @start_time = args['startTime']
+          @point_in_time_recovery_enabled = args['pointInTimeRecoveryEnabled']
+          @transaction_log_retention_days = args['transactionLogRetentionDays']
+          @backup_retention_settings = DatabaseInstanceSettingsBackupConfigurationBackupRetentionSettings.new(args['backupRetentionSettings'], to_s)
+          @location = args['location']
         end
 
         def to_s
