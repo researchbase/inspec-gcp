@@ -25,6 +25,7 @@ require 'google/storage/property/bucket_owner'
 require 'google/storage/property/bucket_retention_policy'
 require 'google/storage/property/bucket_versioning'
 require 'google/storage/property/bucket_website'
+require 'google/storage/property/bucket_iam_configuration'
 
 # A provider to manage Cloud Storage resources.
 class StorageBucket < GcpResourceBase
@@ -55,6 +56,7 @@ class StorageBucket < GcpResourceBase
   attr_reader :retention_policy
   attr_reader :project
   attr_reader :predefined_default_object_acl
+  attr_reader :iam_configuration
 
   def initialize(params)
     super(params.merge({ use_http_transport: true }))
@@ -86,6 +88,7 @@ class StorageBucket < GcpResourceBase
     @retention_policy = GoogleInSpec::Storage::Property::BucketRetentionPolicy.new(@fetched['retentionPolicy'], to_s)
     @project = @fetched['project']
     @predefined_default_object_acl = @fetched['predefinedDefaultObjectAcl']
+    @iam_configuration = GoogleInSpec::Storage::Property::BucketIamConfiguration.new(@fetched['iamConfiguration'], to_s)
   end
 
   # Handles parsing RFC3339 time string
