@@ -24,12 +24,15 @@ module GoogleInSpec
 
         attr_reader :require_ssl
 
+        attr_reader :ssl_mode
+
         def initialize(args = nil, parent_identifier = nil)
           return if args.nil?
           @parent_identifier = parent_identifier
           @ipv4_enabled = args['ipv4Enabled']
           @authorized_networks = GoogleInSpec::SQL::Property::DatabaseInstanceSettingsIpConfigurationAuthorizedNetworksArray.parse(args['authorizedNetworks'], to_s)
           @require_ssl = args['requireSsl']
+          @ssl_mode = args['sslMode']
         end
 
         def to_s
