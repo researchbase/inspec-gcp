@@ -17,6 +17,7 @@ require 'google/sql/property/databaseinstance_settings_backup_configuration'
 require 'google/sql/property/databaseinstance_settings_database_flags'
 require 'google/sql/property/databaseinstance_settings_ip_configuration'
 require 'google/sql/property/databaseinstance_settings_ip_configuration_authorized_networks'
+require 'google/sql/property/databaseinstance_settings_maintenance_window'
 module GoogleInSpec
   module SQL
     module Property
@@ -51,6 +52,8 @@ module GoogleInSpec
 
         attr_reader :storage_auto_resize_limit
 
+        attr_reader :maintenance_window
+
         def initialize(args = nil, parent_identifier = nil)
           return if args.nil?
           @parent_identifier = parent_identifier
@@ -69,6 +72,7 @@ module GoogleInSpec
           @replication_type = args['replicationType']
           @storage_auto_resize = args['storageAutoResize']
           @storage_auto_resize_limit = args['storageAutoResizeLimit']
+          @maintenance_window = GoogleInSpec::SQL::Property::DatabaseInstanceSettingsMaintenanceWindow.new(args['maintenanceWindow'], to_s)
         end
 
         def to_s
