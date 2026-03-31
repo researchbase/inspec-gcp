@@ -14,6 +14,7 @@
 #
 # ----------------------------------------------------------------------------
 require 'gcp_backend'
+require 'google/compute/property/sslcertificate_managed'
 
 # A provider to manage Compute Engine resources.
 class ComputeSslCertificate < GcpResourceBase
@@ -28,6 +29,10 @@ class ComputeSslCertificate < GcpResourceBase
   attr_reader :id
   attr_reader :name
   attr_reader :private_key
+  attr_reader :type
+  attr_reader :managed
+  attr_reader :subject_alternative_names
+  attr_reader :expire_time
 
   def initialize(params)
     super(params.merge({ use_http_transport: true }))
@@ -43,6 +48,10 @@ class ComputeSslCertificate < GcpResourceBase
     @id = @fetched['id']
     @name = @fetched['name']
     @private_key = @fetched['privateKey']
+    @type = @fetched['type']
+    @managed = GoogleInSpec::Compute::Property::SslCertificateManaged.new(@fetched['managed'], to_s)
+    @subject_alternative_names = @fetched['subjectAlternativeNames']
+    @expire_time = @fetched['expireTime']
   end
 
   # Handles parsing RFC3339 time string
