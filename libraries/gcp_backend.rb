@@ -220,7 +220,7 @@ class GcpApiConnection
   def fetch(base_url, template, var_data, request_type = 'Get', body = nil)
     get_request = Network::Base.new(
       build_uri(base_url, template, var_data),
-      fetch_auth,
+      fetch_auth.quota_project!(var_data[:project]),
       request_type,
       body,
     )
@@ -232,24 +232,24 @@ class GcpApiConnection
   end
 
   def fetch_all(base_url, template, var_data, request_type = 'Get')
-    next_page(build_uri(base_url, template, var_data), request_type)
+    next_page(build_uri(base_url, template, var_data), request_type, nil, var_data[:project])
   end
 
-  def next_page(uri, request_type, token = nil)
+  def next_page(uri, request_type, token = nil, quota_project = nil)
     next_hash = {}
     next_hash['pageToken'] = token unless token.nil?
     current_params = Hash[URI.decode_www_form(uri.query || '')].merge(next_hash)
     uri.query = URI.encode_www_form(current_params)
     get_request = Network::Base.new(
       uri,
-      fetch_auth,
+      fetch_auth.quota_project!(quota_project),
       request_type,
     )
     result = return_if_object(get_request.send)
     next_page_token = result['nextPageToken']
     return [result] if next_page_token.nil?
 
-    [result] + next_page(uri, request_type, next_page_token)
+    [result] + next_page(uri, request_type, next_page_token, quota_project)
   end
 
   def return_if_object(response)
@@ -387,6 +387,14 @@ module Network
     def initialize
       @authorization = nil
       @scopes = []
+      @quota_project = nil
+    end
+
+    # Sets the project used as the quota/billing project for requests
+    # (typically the project being audited). Chainable.
+    def quota_project!(project)
+      @quota_project = project
+      self
     end
 
     def authorize(obj)
@@ -436,6 +444,10 @@ module Network
       auth = {}
       @authorization.apply!(auth)
       req['Authorization'] = auth[:authorization]
+      quota_project = ENV['GOOGLE_CLOUD_QUOTA_PROJECT'] ||
+                      @quota_project ||
+                      (@authorization.quota_project_id if @authorization.respond_to?(:quota_project_id))
+      req['x-goog-user-project'] = quota_project unless quota_project.to_s.empty?
       req.token = auth[:authorization].split(' ')[1]
       req
     end
