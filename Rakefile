@@ -95,6 +95,27 @@ namespace :test do
   end
 end
 
+# Tag and push the version in VERSION. Refuses to tag when VERSION and
+# inspec.yml disagree (v1.13.0 shipped reporting 1.11.136), when the tag
+# already exists, or when the tree is dirty, so the published tarball always
+# matches what is committed.
+desc 'Tag v<VERSION> and push the tag (VERSION and inspec.yml must match)'
+task :release do
+  require 'yaml'
+
+  version = File.read('VERSION').strip
+  profile_version = YAML.load_file('inspec.yml')['version'].to_s
+  tag = "v#{version}"
+
+  abort("VERSION (#{version}) does not match inspec.yml version (#{profile_version})") unless version == profile_version
+  abort("Working tree is dirty; commit or stash before releasing") unless `git status --porcelain`.strip.empty?
+  abort("Tag #{tag} already exists") if system("git rev-parse -q --verify refs/tags/#{tag} > /dev/null")
+
+  sh("git tag -a #{tag} -m 'release #{tag}'")
+  sh("git push --follow-tags")
+  puts "Released #{tag}: https://github.com/researchbase/inspec-gcp/archive/#{tag}.tar.gz"
+end
+
 # Automatically generate a changelog for this project. Only loaded if
 # the necessary gem is installed.
 # use `rake changelog to=1.2.0`
