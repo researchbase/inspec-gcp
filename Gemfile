@@ -9,6 +9,7 @@ gem 'googleauth'
 gem 'inspec-core-bin', '>= 5.22.36', '< 6.0'
 gem 'rubocop', '>= 0.77.0'
 gem 'parser', '< 3.3.1.0'
+gem 'csv'
 
 group :development do
   gem 'github_changelog_generator'
