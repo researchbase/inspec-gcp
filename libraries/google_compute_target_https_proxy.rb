@@ -22,6 +22,7 @@ class ComputeTargetHttpsProxy < GcpResourceBase
   supports platform: 'gcp'
 
   attr_reader :params
+  attr_reader :certificate_map
   attr_reader :creation_timestamp
   attr_reader :description
   attr_reader :id
@@ -39,6 +40,7 @@ class ComputeTargetHttpsProxy < GcpResourceBase
   end
 
   def parse
+    @certificate_map = @fetched['certificateMap']
     @creation_timestamp = parse_time_string(@fetched['creationTimestamp'])
     @description = @fetched['description']
     @id = @fetched['id']

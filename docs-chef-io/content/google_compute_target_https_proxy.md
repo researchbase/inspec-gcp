@@ -51,6 +51,8 @@ Properties that can be accessed from the `google_compute_target_https_proxy` res
     * ENABLE
     * DISABLE
 
+  * `certificate_map`: A reference to the Certificate Manager CertificateMap resource (`//certificatemanager.googleapis.com/projects/{project}/locations/{location}/certificateMaps/{name}`) that defines the certificates for this proxy. Mutually exclusive with `ssl_certificates`.
+
   * `ssl_certificates`: A list of SslCertificate resources that are used to authenticate connections between users and the load balancer. At least one SSL certificate must be specified.
 
   * `ssl_policy`: A reference to the SslPolicy resource that will be associated with the TargetHttpsProxy resource. If not set, the TargetHttpsProxy resource will not have any SSL policy configured.

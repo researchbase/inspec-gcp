@@ -23,6 +23,7 @@ class ComputeTargetHttpsProxys < GcpResourceBase
 
   filter_table_config = FilterTable.create
 
+  filter_table_config.add(:certificate_maps, field: :certificate_map)
   filter_table_config.add(:creation_timestamps, field: :creation_timestamp)
   filter_table_config.add(:descriptions, field: :description)
   filter_table_config.add(:ids, field: :id)
@@ -70,6 +71,7 @@ class ComputeTargetHttpsProxys < GcpResourceBase
 
   def transformers
     {
+      'certificateMap' => ->(obj) { [:certificate_map, obj['certificateMap']] },
       'creationTimestamp' => ->(obj) { [:creation_timestamp, parse_time_string(obj['creationTimestamp'])] },
       'description' => ->(obj) { [:description, obj['description']] },
       'id' => ->(obj) { [:id, obj['id']] },

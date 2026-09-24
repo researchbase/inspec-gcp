@@ -33,6 +33,7 @@ Properties that can be accessed from the `google_compute_target_https_proxies` r
 
 See [google_compute_target_https_proxy](google_compute_target_https_proxy) for more detailed information.
 
+  * `certificate_maps`: an array of `google_compute_target_https_proxy` certificate_map
   * `creation_timestamps`: an array of `google_compute_target_https_proxy` creation_timestamp
   * `descriptions`: an array of `google_compute_target_https_proxy` description
   * `ids`: an array of `google_compute_target_https_proxy` id
